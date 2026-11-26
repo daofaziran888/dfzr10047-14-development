@@ -73,6 +73,30 @@ npm run dev
 | 模板差异 | `tmpl_diff` | 差异条目 | 差异编号、旧模板版本、新模板版本 |
 | 投递审计 | `intake_audit` | 审计条目 | 审计编号、关联对象、操作类型 |
 
+## 来源清单批量受理
+
+文件投递工作台顶部提供「来源文件清单批量登记」面板，支持上传/粘贴 JSON、CSV、TSV 清单并在页内预览、补填缺失来源和勾选续做。
+
+受理身份由「来源渠道 + 项目标识 + 内容指纹」组成：
+
+- 相同来源、标识和内容重复导入时复用同一实际收件编号，只记一次受理。
+- 同标识但正文不同会生成独立的同名异件回执，分列来源、内容证据、收件入口和关联版本。
+- 不同来源即使文件名、格式或正文相同也分别登记，不能互相抵扣。
+- 待外部确认的旧版本可按回执或「来源 + 标识 + 旧内容指纹」补登确认；旧确认不能核销新正文版本。
+- 结果投递工作台的「指纹核销批次」面板读取清单回执与指纹，区分已经受理、仍可投递、等待/阻断和已有实际回执的项目；核销后回填投递记录编号、目标位置和目标内容指纹。
+
+常用接口：
+
+```text
+POST /api/file_intake/manifests/preview
+POST /api/file_intake/manifests/import
+GET  /api/file_intake/manifests/{manifest_no}
+POST /api/file_intake/manifests/{manifest_no}/continue
+POST /api/file_intake/receipts/external-confirmation
+GET  /api/file_intake/files/{receive_no}/content
+POST /api/result_deliver/reconcile-fingerprints
+```
+
 ## 约定
 
 - 全部模块共享`frontend/src/views/WorkbenchView.vue|tsx`和一套资源路由。

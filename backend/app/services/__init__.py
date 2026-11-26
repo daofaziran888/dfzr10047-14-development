@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from app.services.base import BaseModuleService
 from app.services.file_intake import FileIntakeService
+from app.services.source_manifest import SourceManifestService
 from app.services.format_probe import FormatProbeService
 from app.services.encoding_norm import EncodingNormService
 from app.services.parser_route import ParserRouteService
@@ -27,6 +28,7 @@ from app.services.intake_audit import IntakeAuditService
 
 SERVICES: dict[str, BaseModuleService] = {
     "file_intake": FileIntakeService(),
+    "source_manifest": SourceManifestService(),
     "format_probe": FormatProbeService(),
     "encoding_norm": EncodingNormService(),
     "parser_route": ParserRouteService(),
@@ -51,5 +53,15 @@ SERVICES: dict[str, BaseModuleService] = {
 }
 
 
+SERVICE_ALIASES = {
+    "manifest": "source_manifest",
+    "manifest_import": "source_manifest",
+    "source_file_manifest": "source_manifest",
+    "file_manifest": "source_manifest",
+    "intake_receipt": "source_manifest",
+}
+
+
 def service_for(module: str) -> BaseModuleService | None:
-    return SERVICES.get(module)
+    canonical = SERVICE_ALIASES.get(module, module)
+    return SERVICES.get(canonical)

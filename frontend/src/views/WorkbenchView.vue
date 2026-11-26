@@ -15,6 +15,9 @@
       </div>
     </header>
 
+    <ManifestImportPanel v-if="meta.key === 'file_intake'" @changed="reload" />
+    <FingerprintReconcilePanel v-if="meta.key === 'result_deliver'" @changed="reload" />
+
     <div class="stat-row">
       <article v-for="item in stats" :key="item.label" class="stat-card">
         <span class="stat-label">{{ item.label }}</span>
@@ -104,6 +107,8 @@ import {
   runAction as applyAction,
 } from '@/api/backend-service'
 import type { EntryRow } from '@/data/types'
+import ManifestImportPanel from '@/components/ManifestImportPanel.vue'
+import FingerprintReconcilePanel from '@/components/FingerprintReconcilePanel.vue'
 
 const props = defineProps<{ moduleKey: string }>()
 const meta = moduleMeta(props.moduleKey)
